@@ -1,0 +1,12 @@
+ul {
+  list-style: none;
+}
+.boxQuestion {
+  display: flex;
+}
+.boxAnswers {
+  ul li {
+    display: flex;
+    align-items: center;
+  }
+}

@@ -1,4 +1,4 @@
-import { Button, createStyles, IconButton, makeStyles, Theme, Toolbar, Typography, AppBar } from '@material-ui/core';
+import { createStyles, IconButton, makeStyles, Theme, Toolbar, Typography, AppBar } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import BtnMetamask from './BtnMetamask/BtnMetamask';
 
@@ -21,7 +21,7 @@ function Header(): JSX.Element {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon/>
@@ -29,7 +29,7 @@ function Header(): JSX.Element {
           <Typography variant="h6" className={classes.title}>
             Survey Crypto
           </Typography>
-          <BtnMetamask></BtnMetamask>
+          <BtnMetamask/>
         </Toolbar>
       </AppBar>
     </div>

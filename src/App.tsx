@@ -1,12 +1,13 @@
-import React, { Fragment, useState } from 'react';
+import React from 'react';
 import Header from './components/Header';
+import Survey from './views/Survey/Survey';
+import './App.css'
 
 function App(): JSX.Element {
-  const [newTask, setNewTask] = useState('');
-
   return (
     <main>
-      <Header></Header>
+      <Header/>
+      <Survey/>
     </main>
   );
 }
