@@ -1,4 +1,8 @@
-import { getValidChain } from './common';
+import { getValidChain } from '../helpers/common';
+import store from '../config/storeCustom';
+import { useNavigate } from 'react-router-dom';
+import { MetamaskEvent } from '../enums/metamask.enums';
+import removeDataSession from '../helpers/session';
 
 declare let window: any;
 
@@ -38,11 +42,11 @@ class Metamask {
 
   validateChainChanged(chainId: string): void {
     if (chainId === getValidChain()) {
-      // store.commit('CAN_PLAY', true);
-      // message.hide();
+      store.setCanPlay('true');
     } else {
-      // store.commit('CAN_PLAY', false);
-      // message.showStatic('Invalid network, you need the BSC network', TypeSnackbar.warning);
+      store.setCanPlay('false');
+      window.location.href = '/network-error';
+      console.log('validateChainChanged', chainId)
     }
   }
 
@@ -60,6 +64,20 @@ class Metamask {
     }
     console.log('Please connect to Metamask.')
     return false;
+  }
+
+  eventHandlerDisconnectCustom() {
+    window.ethereum.on(MetamaskEvent.accountsChanged, async (accounts: string[]) => {
+      if (accounts.length === 0) {
+        // removeDataSession();
+        store.setAddress('')
+        store.setCanPlay('false')
+        store.setIsConnectedWithMetamask('false')
+        // Router.push({ name: 'login' }).catch((err) => err)
+        return;
+      }
+      store.setCanPlay('true')
+    });
   }
 }
 

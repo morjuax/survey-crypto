@@ -9,7 +9,7 @@ import {
   Theme, Typography
 } from '@material-ui/core';
 import { Fragment } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,7 +34,7 @@ export default function TriviaBox({id, name, image, description}: Props) {
   const classes = useStyles();
   const navigate = useNavigate();
   function play() {
-    navigate("/quiz/1");
+    navigate(`/quiz/${id}`);
   }
   return (
     <Fragment>

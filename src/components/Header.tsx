@@ -1,5 +1,7 @@
-import { createStyles, IconButton, makeStyles, Theme, Toolbar, Typography, AppBar } from '@material-ui/core';
+import { createStyles, makeStyles, Theme, Toolbar, Typography, AppBar } from '@material-ui/core';
 import BtnMetamask from './BtnMetamask/BtnMetamask';
+import Balance from './Balance/Balance';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -11,24 +13,28 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       flexGrow: 1,
-      textTransform: 'uppercase'
+      textTransform: 'uppercase',
+      cursor: 'pointer'
     },
   }),
 );
 
 function Header(): JSX.Element {
   const classes = useStyles();
+  const navigate = useNavigate();
+
+  function goHome() {
+    navigate("/");
+  }
 
   return (
     <div className={classes.root}>
       <AppBar position="fixed">
         <Toolbar>
-          {/*<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">*/}
-          {/*  <MenuIcon/>*/}
-          {/*</IconButton>*/}
-          <Typography variant="h6" className={classes.title}>
+          <Typography variant="h6" className={classes.title} onClick={goHome}>
             Survey Crypto
           </Typography>
+          <Balance/>
           <BtnMetamask/>
         </Toolbar>
       </AppBar>
