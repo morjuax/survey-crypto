@@ -6,7 +6,11 @@ import ItemSurvey from '../ItemSurvey/ItemSurvey';
 import { Button } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
-export default function ListSurvey() {
+interface Props {
+  id: number;
+}
+
+export default function ListSurvey({id}: Props) {
   const [questions, setQuestions] = useState<Question[]>([]);
 
   useEffect(() => {

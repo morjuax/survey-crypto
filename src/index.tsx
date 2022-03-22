@@ -3,11 +3,25 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+import Survey from './views/Survey/Survey';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<App />}>
+        <Route index element={<App />} />
+        <Route path="trivia">
+          <Route path="quiz/:triviaId" element={<Survey/>} />
+        </Route>
+      </Route>
+    </Routes>
+  </BrowserRouter>,
+
   document.getElementById('root')
 );
 
