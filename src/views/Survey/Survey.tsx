@@ -11,7 +11,7 @@ export default function Survey(): JSX.Element {
   return (
     <Fragment>
       <Container maxWidth="lg" className="containerSuv">
-        <ListSurvey id={1}/>
+        <ListSurvey/>
       </Container>
     </Fragment>
   )

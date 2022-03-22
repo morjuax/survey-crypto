@@ -7,7 +7,7 @@ import { Button } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 
 interface Props {
-  id: number;
+  id?: number;
 }
 
 export default function ListSurvey({id}: Props) {
@@ -15,12 +15,12 @@ export default function ListSurvey({id}: Props) {
 
   useEffect(() => {
     async function getQuestions() {
-      const questions = await QuizService.getQuestions();
+      const questions = await QuizService.getQuestions(1);
       setQuestions(questions);
     }
 
     getQuestions()
-  }, [questions]);
+  }, []);
 
   return (
     <Fragment>
