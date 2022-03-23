@@ -49,7 +49,7 @@ export default function ListSurvey({ id }: Props) {
     if (!isValidDateSubmit) {
       setLabelButton('Time invalid')
     }
-    const isValidSubmit = isValidAnswers && isValidAnswers
+    const isValidSubmit = isValidDateSubmit && isValidAnswers
     setIsDisabledButton(!isValidSubmit)
   }
 
