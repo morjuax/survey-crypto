@@ -13,15 +13,15 @@ export default function Balance() {
   const [name, setName] = useState<string>('');
 
   async function getBalanceWallet(): Promise<string> {
-    const Paradise = await new web3.eth.Contract(SurveyContract.abi, environment.tokenQuiz)
-    const balanceDecimal = await Paradise.methods.balanceOf(store.getAddress).call()
+    const SurveyInstance = await new web3.eth.Contract(SurveyContract.abi, environment.tokenQuiz)
+    const balanceDecimal = await SurveyInstance.methods.balanceOf(store.getAddress).call()
     const balance = Number(web3.utils.fromWei(web3.utils.toBN(balanceDecimal), 'ether'));
     return balance.toFixed(4);
   }
 
   async function getSymbolToken(): Promise<any> {
-    const Paradise = await new web3.eth.Contract(SurveyContract.abi, environment.tokenQuiz)
-    return Paradise.methods.symbol().call();
+    const SurveyInstance = await new web3.eth.Contract(SurveyContract.abi, environment.tokenQuiz)
+    return SurveyInstance.methods.symbol().call();
   }
 
 
