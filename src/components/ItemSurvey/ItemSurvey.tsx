@@ -1,13 +1,32 @@
 import './ItemSurvey.scss'
 import SendIcon from '@material-ui/icons/Send';
 import { Checkbox } from '@material-ui/core';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { ItemAnswer, State } from './state.interface';
 
 interface Props {
   question: string;
-  answers: string[]
+  answers: string[];
+  qTag: string;
 }
 
-export default function ItemSurvey({question, answers}: Props) {
+export default function ItemSurvey({question, answers, qTag}: Props) {
+  const [state, setState] = useState<State>({
+    list: [],
+  })
+
+  useEffect(() => {
+    const answerParsed = answers.map((item) => ({
+      answer: item,
+      checked: false,
+    }))
+    setState({...state, list: answerParsed});
+  }, [])
+  
+  function handleChange(a: ItemAnswer): any {
+    a.checked = !a.checked;
+  }
+
   return (
     <li className="item">
       <div className="boxQuestion">
@@ -16,16 +35,14 @@ export default function ItemSurvey({question, answers}: Props) {
       </div>
       <div className="boxAnswers">
         <ul>
-          {answers.map((a, i) => {
+          {state.list.map((a, i) => {
             return (
               <li key={i}>
                 <Checkbox
                   id={`custom-checkbox-${i}`}
-                  // checked={checked}
-                  // onChange={handleChange}
-                  name={`answerCheck-${i}`}
+                  name={qTag}
                 />
-                <div className="answer">{a}</div>
+                <div className="answer">{a.answer}</div>
               </li>
             )
           })}

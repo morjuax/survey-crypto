@@ -1,22 +1,18 @@
 import './Survey.scss'
 import { Fragment } from 'react';
-import { Container, Grid } from '@material-ui/core';
+import { Container } from '@material-ui/core';
 import ListSurvey from '../../components/ListSurvey/ListSurvey';
-import Cooldown from '../../components/Cooldown/Cooldown';
-
-// interface Props {
-//   id: number;
-// }
+import { useParams } from 'react-router-dom'
+import SubBar from '../../components/SubBar/SubBar';
 
 export default function Survey(): JSX.Element {
+  const params = useParams();
+  const triviaId = Number(params.triviaId)
   return (
     <Fragment>
       <Container maxWidth="lg" className="containerSuv">
-        <Grid container spacing={3}>
-          <Grid item xs={6}>Title</Grid>
-          <Grid item xs={6}><Cooldown/></Grid>
-        </Grid>
-        <ListSurvey/>
+        <SubBar title={'Quiz'}/>
+        <ListSurvey id={triviaId}/>
       </Container>
     </Fragment>
   )

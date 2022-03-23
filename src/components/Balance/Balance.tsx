@@ -1,6 +1,6 @@
 import './Balance.scss';
 import { Fragment, useEffect, useState } from 'react';
-import { Chip } from '@material-ui/core';
+import { Chip, CircularProgress } from '@material-ui/core';
 import Web3Provider from '../../providers/web3.provider';
 import store from '../../config/storeCustom';
 import { environment } from '../../enviroments/environment';
@@ -9,8 +9,12 @@ const SurveyContract = require(`../../abis/survey-abi.json`);
 const web3 = Web3Provider.getWeb3WithProvider();
 
 export default function Balance() {
-  const [balance, setBalance] = useState<string>('0');
-  const [name, setName] = useState<string>('');
+  const [state, setState] = useState({
+    balance: '0',
+    name: '',
+    loadingBalance: false
+  });
+
 
   async function getBalanceWallet(): Promise<string> {
     const SurveyInstance = await new web3.eth.Contract(SurveyContract.abi, environment.tokenQuiz)
@@ -24,24 +28,23 @@ export default function Balance() {
     return SurveyInstance.methods.symbol().call();
   }
 
-
-
   useEffect(() => {
     (async () => {
       async function setData() {
+        setState({ ...state, loadingBalance: true})
         const symbol = await getSymbolToken();
         const balance = await getBalanceWallet();
-        setName(symbol);
-        setBalance(balance)
+        setState({ ...state, name: symbol, balance, loadingBalance: false})
       }
       await setData();
     })()
     // await setData();
   }, [])
 
+  if (state.loadingBalance) return <CircularProgress color="secondary" />
   return (
     <Fragment>
-      <Chip className='b' label={`${balance} ${name}`} />
+      <Chip className='b' label={`${state.balance} ${state.name}`} />
     </Fragment>
   )
 }
