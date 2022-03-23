@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import Header from './components/Header';
 import './App.css'
 import Metamask from './services/metamask';
 import ValidateGame from './providers/validate-game';

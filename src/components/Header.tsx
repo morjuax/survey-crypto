@@ -2,7 +2,6 @@ import { createStyles, makeStyles, Theme, Toolbar, Typography, AppBar } from '@m
 import BtnMetamask from './BtnMetamask/BtnMetamask';
 import Balance from './Balance/Balance';
 import { useNavigate } from 'react-router-dom';
-import Cooldown from './Cooldown/Cooldown';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

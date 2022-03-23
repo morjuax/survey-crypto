@@ -10,7 +10,6 @@ import NotFound from './views/NotFound';
 import Header from './components/Header';
 
 ReactDOM.render(
-  <React.StrictMode>
     <BrowserRouter>
       <Header/>
       <Routes>
@@ -19,8 +18,7 @@ ReactDOM.render(
         <Route path='/network-error' element={<NetworkError/>}/>
         <Route path='*' element={<NotFound/>}/>
       </Routes>
-    </BrowserRouter>
-  </React.StrictMode>,
+    </BrowserRouter>,
   document.getElementById('root')
 );
 

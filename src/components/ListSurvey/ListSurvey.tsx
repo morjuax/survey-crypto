@@ -3,15 +3,17 @@ import { Fragment, useEffect, useState } from 'react';
 import QuizService from '../../services/quiz.service';
 import { Question } from '../../interfaces/quiz.inteface';
 import ItemSurvey from '../ItemSurvey/ItemSurvey';
-import { Backdrop, Button, CircularProgress, createStyles, makeStyles, Theme } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import Web3Provider from '../../providers/web3.provider';
 import { environment } from '../../enviroments/environment';
-import store from '../../config/storeCustom';
 import { isSuccessfulTransaction } from '../../helpers/confirm';
 import { BlockNumber } from 'web3-core';
 import { getTimestampNowUtc } from '../../helpers/utils';
 import Loading from '../Loading/Loading';
+import SurveyContractService from '../../services/survey-contract.service';
+import Message from '../Message/Message';
+import MessageInterface from '../../interfaces/Message.interface';
 
 interface Props {
   id?: number;
@@ -20,30 +22,36 @@ interface Props {
 const SurveyContract = require(`../../abis/survey-abi.json`);
 const web3 = Web3Provider.getWeb3WithProvider();
 
-export default function ListSurvey({id}: Props) {
+export default function ListSurvey({ id }: Props) {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(true);
   const [labelButton, setLabelButton] = useState<string>('Finalize Quiz');
   const [open, setOpen] = useState(false);
-
-  async function getCooldownSeconds(): Promise<any> {
-    const SurveyInstance = await new web3.eth.Contract(SurveyContract.abi, environment.tokenQuiz)
-    return SurveyInstance.methods.cooldownSeconds().call();
-  }
-
-  async function getLastSubmittal(): Promise<any> {
-    const SurveyInstance = await new web3.eth.Contract(SurveyContract.abi, environment.tokenQuiz)
-    const address = store.getAddress;
-    return SurveyInstance.methods.lastSubmittal(address).call();
-  }
+  const [answers, setAnswers] = useState<number[]>([]);
+  const [message, setMessage] = useState<MessageInterface>({
+    show: false,
+  });
 
   async function validateDateSubmit(): Promise<boolean> {
-    const cooldown = await getCooldownSeconds()
-    const lastSubmittal = await getLastSubmittal();
+    const cooldown = await SurveyContractService.getCooldownSeconds()
+    const lastSubmittal = await SurveyContractService.getLastSubmittal();
     const now = getTimestampNowUtc();
     return now > (Number(lastSubmittal) + Number(cooldown))
   }
 
+  function isValidCheckboxes() {
+    return answers.length > 0
+  }
+
+  async function validateSubmitButton() {
+    const isValidDateSubmit = await validateDateSubmit();
+    const isValidAnswers = isValidCheckboxes();
+    if (!isValidDateSubmit) {
+      setLabelButton('Time invalid')
+    }
+    const isValidSubmit = isValidAnswers && isValidAnswers
+    setIsDisabledButton(!isValidSubmit)
+  }
 
   useEffect(() => {
     async function getQuestions() {
@@ -51,22 +59,14 @@ export default function ListSurvey({id}: Props) {
       setQuestions(questions);
     }
 
-    async function validateSubmitButton() {
-      const isValidDateSubmit = await validateDateSubmit();
-      if (!isValidDateSubmit) {
-        setLabelButton('Time invalid')
-      }
-      setIsDisabledButton(!isValidDateSubmit)
-    }
-
     getQuestions()
     validateSubmitButton();
-  }, []);
+  }, [id]);
 
   async function getTransactionNonce(
     wallet: string,
     blockNumber: BlockNumber,
-): Promise<number> {
+  ): Promise<number> {
     return await web3.eth.getTransactionCount(wallet, blockNumber);
   }
 
@@ -89,11 +89,12 @@ export default function ListSurvey({id}: Props) {
   }
 
   async function submitSurvey() {
+    if (!isValidCheckboxes()) return;
     setOpen(true)
     setIsDisabledButton(true)
     const SurveyInstance = await new web3.eth.Contract(SurveyContract.abi, environment.tokenQuiz);
     const surveyId = web3.utils.toWei('1', 'ether')
-    const transaction = SurveyInstance.methods.submit(surveyId, [1,2,3,4,5,6])
+    const transaction = SurveyInstance.methods.submit(surveyId, answers)
     const privateKey = process.env.REACT_APP_SIGNER_PRIVATE_KEY;
     const receipt = await sendOperation(privateKey || '', transaction);
     const isValidDateSubmit = await validateDateSubmit();
@@ -101,17 +102,25 @@ export default function ListSurvey({id}: Props) {
     console.log(receipt)
     if (isSuccessfulTransaction(receipt)) {
       console.log('Success');
+      setMessage({ show: true, text: 'Survey processed successfully' })
     }
     setOpen(false)
   }
 
+  async function onChangeCheckbox(i: number) {
+    const newArray = [...answers, i];
+    setAnswers(newArray)
+    await validateSubmitButton()
+  }
+
   return (
     <Fragment>
-      <h4>{}</h4>
+      <Message show={message.show} text={message.text}/>
       <ul>
         {questions.map((q, i) => {
           return (
-            <ItemSurvey key={i} question={q.question} answers={q.answers} qTag={`q-${i}`}/>
+            <ItemSurvey key={i} question={q.question} answers={q.answers} qTag={`q-${i}`}
+                        onChangeCheckbox={onChangeCheckbox}/>
           )
         })
         }
@@ -121,7 +130,7 @@ export default function ListSurvey({id}: Props) {
                 size="large"
                 color="primary"
                 variant="contained"
-                startIcon={<SaveIcon />}
+                startIcon={<SaveIcon/>}
                 disabled={isDisabledButton}
                 onClick={submitSurvey}
         >{labelButton}</Button>

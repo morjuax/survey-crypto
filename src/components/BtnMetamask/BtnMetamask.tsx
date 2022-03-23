@@ -11,9 +11,7 @@ import { addressParsed } from '../../helpers/wallet.validator';
 declare let window: any;
 
 export default function BtnMetamask() {
-  const [accounts, setAccounts] = useState<string[]>([]);
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  // const [needLogin, setNeedLogin] = useState<boolean>(false);
   const [address, setAddress] = useState<string>('');
 
   useEffect(() => {
@@ -22,12 +20,11 @@ export default function BtnMetamask() {
       setIsConnected(isConnected);
     })();
     setAddress(addressParsed(store.getAddress));
-  })
+  }, [])
 
   async function connectToMeta() {
     if (window.ethereum) {
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      setAccounts(accounts)
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
     }
   }
 

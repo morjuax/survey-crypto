@@ -3,5 +3,6 @@ export interface ItemAnswer {
   checked: boolean;
 }
 export interface State {
-  list: ItemAnswer[]
+  list: ItemAnswer[];
+  answers: number[];
 }

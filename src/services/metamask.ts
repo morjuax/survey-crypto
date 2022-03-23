@@ -1,8 +1,6 @@
 import { getValidChain } from '../helpers/common';
 import store from '../config/storeCustom';
-import { useNavigate } from 'react-router-dom';
 import { MetamaskEvent } from '../enums/metamask.enums';
-import removeDataSession from '../helpers/session';
 
 declare let window: any;
 
