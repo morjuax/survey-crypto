@@ -2,10 +2,11 @@ import {
   Container,
   Grid,
 } from '@material-ui/core';
-import { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Trivia } from '../../interfaces/quiz.inteface';
 import TriviaService from '../../services/trivia.service';
 import TriviaBox from '../../components/TriviaBox/TriviaBox';
+import SubBar from '../../components/SubBar/SubBar';
 
 export default function Trivias() {
   const [trivias, setTrivias] = useState<Trivia[]>([]);
@@ -21,7 +22,7 @@ export default function Trivias() {
   return (
     <Fragment>
       <Container maxWidth="lg" className="containerTrivia">
-        <h1>Daily Trivia</h1>
+        <SubBar title="Daily Trivias"/>
         <Grid container spacing={3}>
           {trivias.map((item, i) => {
             return (
