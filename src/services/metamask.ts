@@ -13,7 +13,7 @@ class Metamask {
 
   async getAccountCurrent() {
     const accounts = await this.ethereum.request({ method: 'eth_accounts' });
-    return accounts[0];
+    return accounts[0] || '';
   }
 
   async isMetaMaskConnected(): Promise<boolean> {
@@ -50,7 +50,6 @@ class Metamask {
 
   async validateChainCurrent() {
     const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-    console.log('chainId', chainId)
     this.validateChainChanged(chainId);
   }
 
@@ -67,6 +66,7 @@ class Metamask {
   eventHandlerDisconnectCustom() {
     window.ethereum.on(MetamaskEvent.accountsChanged, async (accounts: string[]) => {
       if (accounts.length === 0) {
+        console.log('borrar')
         // removeDataSession();
         store.setAddress('')
         store.setCanPlay('false')

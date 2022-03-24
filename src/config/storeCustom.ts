@@ -1,5 +1,5 @@
 const data = {
-  getAddress: localStorage.getItem('address') || '',
+  address: localStorage.getItem('address') || '',
   needLogin: localStorage.getItem('needLogin'),
   isConnectedWithMetamask: localStorage.getItem('isConnectedWithMetamask'),
   canPlay: localStorage.getItem('canPlay'),

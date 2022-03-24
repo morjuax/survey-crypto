@@ -18,7 +18,7 @@ export default function Balance() {
 
   async function getBalanceWallet(): Promise<string> {
     const SurveyInstance = await new web3.eth.Contract(SurveyContract.abi, environment.tokenQuiz)
-    const balanceDecimal = await SurveyInstance.methods.balanceOf(store.getAddress).call()
+    const balanceDecimal = await SurveyInstance.methods.balanceOf(store.address).call()
     const balance = Number(web3.utils.fromWei(web3.utils.toBN(balanceDecimal), 'ether'));
     return balance.toFixed(4);
   }
@@ -31,10 +31,12 @@ export default function Balance() {
   useEffect(() => {
     (async () => {
       async function setData() {
-        setState({ ...state, loadingBalance: true})
-        const symbol = await getSymbolToken();
-        const balance = await getBalanceWallet();
-        setState({ ...state, name: symbol, balance, loadingBalance: false})
+        if (store.canPlay === 'true') {
+          setState({ ...state, loadingBalance: true})
+          const symbol = await getSymbolToken();
+          const balance = await getBalanceWallet();
+          setState({ ...state, name: symbol, balance, loadingBalance: false})
+        }
       }
       await setData();
     })()

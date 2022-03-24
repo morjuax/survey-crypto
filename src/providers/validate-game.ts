@@ -5,14 +5,13 @@ import store from '../config/storeCustom';
 
 class ValidateGame {
   async canPlay(): Promise<boolean> {
-    const hasAccounts = await Metamask.getAccountCurrent();
-    if (!hasAccounts) {
+    const address = await Metamask.getAccountCurrent();
+    if (!address) {
       store.setCanPlay('false');
       store.setNeedLogin('true');
       return false;
     }
 
-    const address = store.getAddress;
     const hasPublicAddress = this.hasPublicAddress(address);
     if (!hasPublicAddress) {
       store.setCanPlay('false');

@@ -13,7 +13,7 @@ class SurveyContractService {
 
   async getLastSubmittal(): Promise<any> {
     const SurveyInstance = await new web3.eth.Contract(SurveyContract.abi, environment.tokenQuiz)
-    const address = store.getAddress;
+    const address = store.address;
     return SurveyInstance.methods.lastSubmittal(address).call();
   }
 }

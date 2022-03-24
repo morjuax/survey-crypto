@@ -14,12 +14,17 @@ export default function BtnMetamask() {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [address, setAddress] = useState<string>('');
 
+  async function validateConnection() {
+    const isConnected = await Metamask.isMetaMaskConnected();
+    const address = await Metamask.getAccountCurrent();
+    setIsConnected(isConnected);
+    setAddress(addressParsed(address));
+  }
+
   useEffect(() => {
     (async () => {
-      const isConnected = await Metamask.isMetaMaskConnected();
-      setIsConnected(isConnected);
+      await validateConnection()
     })();
-    setAddress(addressParsed(store.getAddress));
   }, [])
 
   async function connectToMeta() {
@@ -48,6 +53,7 @@ export default function BtnMetamask() {
     const canPlay = await ValidateGame.canPlay();
 
     if (canPlay) {
+      await validateConnection();
       await Metamask.validateChainCurrent();
     }
   }
