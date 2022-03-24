@@ -8,12 +8,14 @@ import SaveIcon from '@material-ui/icons/Save';
 import Web3Provider from '../../providers/web3.provider';
 import { environment } from '../../enviroments/environment';
 import { isSuccessfulTransaction } from '../../helpers/confirm';
-import { BlockNumber } from 'web3-core';
+import { BlockNumber, TransactionConfig } from 'web3-core';
 import { getTimestampNowUtc } from '../../helpers/utils';
 import Loading from '../Loading/Loading';
 import SurveyContractService from '../../services/survey-contract.service';
 import Message from '../Message/Message';
 import MessageInterface from '../../interfaces/Message.interface';
+import { useRecoilValue } from 'recoil';
+import { addressState } from '../../state/atoms';
 
 interface Props {
   id?: number;
@@ -31,6 +33,7 @@ export default function ListSurvey({ id }: Props) {
   const [message, setMessage] = useState<MessageInterface>({
     show: false,
   });
+  const addressR = useRecoilValue(addressState)
 
   async function validateDateSubmit(): Promise<boolean> {
     const cooldown = await SurveyContractService.getCooldownSeconds()
@@ -75,11 +78,12 @@ export default function ListSurvey({ id }: Props) {
 
     const walletOwner = signer.address;
     const nonce = await getTransactionNonce(walletOwner, 'pending');
-    const options = {
+    const options: TransactionConfig = {
       to: transaction._parent._address,
       data: transaction.encodeABI(),
       gas: await transaction.estimateGas({ from: walletOwner }),
       nonce,
+      from: addressR,
     };
     const signed = await web3.eth.accounts.signTransaction(
       options,
