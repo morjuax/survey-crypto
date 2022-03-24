@@ -16,6 +16,7 @@ import Message from '../Message/Message';
 import MessageInterface from '../../interfaces/Message.interface';
 import { useRecoilValue } from 'recoil';
 import { addressState } from '../../state/atoms';
+import { TypeAlert } from '../../enums/Alert.enum';
 
 interface Props {
   id?: number;
@@ -96,19 +97,24 @@ export default function ListSurvey({ id }: Props) {
     if (!isValidCheckboxes()) return;
     setOpen(true)
     setIsDisabledButton(true)
-    const SurveyInstance = await new web3.eth.Contract(SurveyContract.abi, environment.tokenQuiz);
-    const surveyId = web3.utils.toWei('1', 'ether')
-    const transaction = SurveyInstance.methods.submit(surveyId, answers)
-    const privateKey = process.env.REACT_APP_SIGNER_PRIVATE_KEY;
-    const receipt = await sendOperation(privateKey || '', transaction);
-    const isValidDateSubmit = await validateDateSubmit();
-    setIsDisabledButton(!isValidDateSubmit)
-    console.log(receipt)
-    if (isSuccessfulTransaction(receipt)) {
-      console.log('Success');
-      setMessage({ show: true, text: 'Survey processed successfully' })
+    try {
+      const SurveyInstance = await new web3.eth.Contract(SurveyContract.abi, environment.tokenQuiz);
+      const surveyId = web3.utils.toWei('1', 'ether')
+      const transaction = SurveyInstance.methods.submit(surveyId, answers)
+      const privateKey = process.env.REACT_APP_SIGNER_PRIVATE_KEY;
+      const receipt = await sendOperation(privateKey || '', transaction);
+      const isValidDateSubmit = await validateDateSubmit();
+      setIsDisabledButton(!isValidDateSubmit)
+      console.log(receipt)
+      if (isSuccessfulTransaction(receipt)) {
+        console.log('Success');
+        setMessage({ show: true, text: 'Survey processed successfully' })
+      }
+      setOpen(false)
+    } catch (e: any) {
+      setMessage({ show: true, type: TypeAlert.error, text: `Error processing transaction ${e}` })
     }
-    setOpen(false)
+
   }
 
   async function onChangeCheckbox(i: number) {
@@ -119,7 +125,7 @@ export default function ListSurvey({ id }: Props) {
 
   return (
     <Fragment>
-      <Message show={message.show} text={message.text}/>
+      <Message show={message.show} text={message.text} type={message.type}/>
       <ul>
         {questions.map((q, i) => {
           return (
