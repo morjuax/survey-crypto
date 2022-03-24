@@ -7,12 +7,16 @@ import store from '../../config/storeCustom'
 import Web3Provider from '../../providers/web3.provider';
 import ValidateGame from '../../providers/validate-game';
 import { addressParsed } from '../../helpers/wallet.validator';
+import { useRecoilState } from 'recoil';
+import { addressState, shouldUpdateBalance } from '../../state/atoms';
 
 declare let window: any;
 
 export default function BtnMetamask() {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [address, setAddress] = useState<string>('');
+  const [shouldUpdateB, setShouldUpdateB] = useRecoilState(shouldUpdateBalance);
+  const [addressR, setAddressR] = useRecoilState(addressState);
 
   async function validateConnection() {
     const isConnected = await Metamask.isMetaMaskConnected();
@@ -48,6 +52,7 @@ export default function BtnMetamask() {
 
     const address = coinBase.toLowerCase();
     store.setAddress(address);
+    setAddressR(address)
     store.setNeedLogin('false');
 
     const canPlay = await ValidateGame.canPlay();
@@ -55,6 +60,7 @@ export default function BtnMetamask() {
     if (canPlay) {
       await validateConnection();
       await Metamask.validateChainCurrent();
+      setShouldUpdateB(true);
     }
   }
 

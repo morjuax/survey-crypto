@@ -8,8 +8,10 @@ import Survey from './views/Survey/Survey';
 import NetworkError from './views/NetworkError/NetworkError';
 import NotFound from './views/NotFound';
 import Header from './components/Header';
+import { RecoilRoot } from 'recoil';
 
 ReactDOM.render(
+  <RecoilRoot>
     <BrowserRouter>
       <Header/>
       <Routes>
@@ -18,7 +20,8 @@ ReactDOM.render(
         <Route path='/network-error' element={<NetworkError/>}/>
         <Route path='*' element={<NotFound/>}/>
       </Routes>
-    </BrowserRouter>,
+    </BrowserRouter>
+  </RecoilRoot>,
   document.getElementById('root')
 );
 

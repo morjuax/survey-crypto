@@ -71,7 +71,7 @@ class Metamask {
         store.setAddress('')
         store.setCanPlay('false')
         store.setIsConnectedWithMetamask('false')
-        // Router.push({ name: 'login' }).catch((err) => err)
+        // TODO: Router login
         return;
       }
       store.setCanPlay('true')
